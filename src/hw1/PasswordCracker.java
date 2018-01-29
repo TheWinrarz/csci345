@@ -5,12 +5,10 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Scanner;
-
+import java.util.ArrayList;
 
 class PasswordCracker {
 
-    File passwordFile;
 
     MessageDigest md;
 
@@ -22,10 +20,10 @@ class PasswordCracker {
 
     }
 
-    public void readInput(String filename) {
+    public String readInput(String filename) {
 
+        String fullText = "";
         try {
-            String fullText = "";
             BufferedReader in = new BufferedReader(new FileReader(filename));
             String line = in.readLine();
 
@@ -35,9 +33,16 @@ class PasswordCracker {
 
             }
 
-            System.out.println(fullText);
-
         } catch (IOException e) {e.printStackTrace();}
+
+        System.out.println(fullText);
+
+        return fullText;
+    }
+
+    public ArrayList<String> parseInput(String input){
+        ArrayList<String> users = new ArrayList<>();
+        return users;
     }
 
 
@@ -70,8 +75,15 @@ class PasswordCracker {
     public static void main(String[] args){
 
         PasswordCracker c = new PasswordCracker();
+
+        //The first four passwords
         System.out.println(c.hash("1234"));
-        c.readInput("C:\\Users\\Daniel Lee\\Desktop\\School\\CSCI\\CSCI 345\\homework\\csci345\\src\\hw1\\passwords");
+        System.out.println(c.hash("Hair6"));
+        System.out.println(c.hash("b3ach"));
+        System.out.println(c.hash("9wXy!"));
+
+
+        c.readInput(args[0]);
     }
 
 

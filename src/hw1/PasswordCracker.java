@@ -1,36 +1,47 @@
 package hw1;
 
-import java.io.File;
+import java.io.*;
 
-//USE DigestUtils first
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Scanner;
 
 
 class PasswordCracker {
 
-    static File passwordFile;
+    File passwordFile;
 
-    static MessageDigest md;
+    MessageDigest md;
 
     public PasswordCracker(){
 
         try {
             md = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {}
-    }
-
-    private static void readInput(String filename){
-
-        passwordFile = new File(filename);
-
 
     }
 
+    public void readInput(String filename) {
 
-    public static String hash(String preimage){
+        try {
+            String fullText = "";
+            BufferedReader in = new BufferedReader(new FileReader(filename));
+            String line = in.readLine();
+
+            while (line != null){
+                fullText = fullText + line + "\n";
+                line = in.readLine();
+
+            }
+
+            System.out.println(fullText);
+
+        } catch (IOException e) {e.printStackTrace();}
+    }
+
+
+    public String hash(String preimage){
 
         String digest = "";
 
@@ -46,6 +57,7 @@ class PasswordCracker {
             while(digest.length() < 32 ){
                 digest = "0" + digest;
             }
+
             digest = digest.toUpperCase();
 
 
@@ -56,11 +68,10 @@ class PasswordCracker {
     }
 
     public static void main(String[] args){
+
         PasswordCracker c = new PasswordCracker();
-        System.out.println(hash("1234"));
-        System.out.println(hash("Hair6"));
-        System.out.println(hash("b3ach"));
-        System.out.println(hash("9wXy!"));
+        System.out.println(c.hash("1234"));
+        c.readInput("C:\\Users\\Daniel Lee\\Desktop\\School\\CSCI\\CSCI 345\\homework\\csci345\\src\\hw1\\passwords");
     }
 
 

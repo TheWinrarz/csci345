@@ -32,25 +32,27 @@ class PasswordCracker {
 
     public static String hash(String preimage){
 
-        String hashtext = "";
+        String digest = "";
 
         try {
 
-            byte[] bytesOfPreimage = preimage.getBytes("US-ASCII");
-            byte[] digest = md.digest(bytesOfPreimage);
+            byte[] preimageByteArray = preimage.getBytes("US-ASCII");
+            byte[] digestByteArray = md.digest(preimageByteArray);
 
-            BigInteger bigInt = new BigInteger(1,digest);
-            hashtext = bigInt.toString(16);
+            BigInteger bigInt = new BigInteger(1,digestByteArray);
+            digest = bigInt.toString(16);
 
-            while(hashtext.length() < 32 ){
-                hashtext = "0"+hashtext;
+            //zero padding the digest
+            while(digest.length() < 32 ){
+                digest = "0" + digest;
             }
+            digest = digest.toUpperCase();
 
 
         } catch (UnsupportedEncodingException e) {}
 
 
-        return hashtext;
+        return digest;
     }
 
     public static void main(String[] args){

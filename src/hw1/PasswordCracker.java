@@ -21,7 +21,6 @@ class PasswordCracker {
     }
 
     public String readInput(String filename) {
-
         String fullText = "";
         try {
             BufferedReader in = new BufferedReader(new FileReader(filename));
@@ -35,13 +34,16 @@ class PasswordCracker {
 
         } catch (IOException e) {e.printStackTrace();}
 
-        System.out.println(fullText);
 
         return fullText;
     }
 
     public ArrayList<String> parseInput(String input){
         ArrayList<String> users = new ArrayList<>();
+        String lines[] = input.split("\\r?\\n");
+
+        for (int i = 0; i < lines.length; i++) users.add(lines[i]);
+
         return users;
     }
 
@@ -83,7 +85,9 @@ class PasswordCracker {
         System.out.println(c.hash("9wXy!"));
 
 
-        c.readInput(args[0]);
+        System.out.println(c.parseInput(c.readInput(args[0])).get(0));
+
+
     }
 
 

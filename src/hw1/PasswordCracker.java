@@ -12,6 +12,7 @@ class PasswordCracker {
 
     MessageDigest md;
 
+    //constructor to create MessageDigest MD5 instance
     public PasswordCracker(){
 
         try {
@@ -20,7 +21,9 @@ class PasswordCracker {
 
     }
 
+    //returns a string that contains the entire contents of the file
     public String readInput(String filename) {
+
         String fullText = "";
         try {
             BufferedReader in = new BufferedReader(new FileReader(filename));
@@ -38,6 +41,7 @@ class PasswordCracker {
         return fullText;
     }
 
+    //returns ArrayList where each element is a line of the input
     public ArrayList<String> parseInput(String input){
         ArrayList<String> users = new ArrayList<>();
         String lines[] = input.split("\\r?\\n");
@@ -47,7 +51,32 @@ class PasswordCracker {
         return users;
     }
 
+    //returns an ArrayList containing just the hash of each of the lines in the password file
+    public ArrayList<String> extractHashes(ArrayList<String> users){
+        ArrayList<String> passwordHashes = new ArrayList<>();
+        String[] lineArray;
 
+        for (int i = 0; i < users.size(); i++){
+            lineArray = users.get(i).split(":");
+            passwordHashes.add(lineArray[1]);
+        }
+
+        return passwordHashes;
+
+    }
+
+
+    public ArrayList<String> createHashes(ArrayList<String> wordList){
+        ArrayList<String> hashList = new ArrayList<>();
+
+        for (String word : wordList){
+            hashList.add(hash(word));
+        }
+
+        return hashList;
+    }
+
+    //returns MD5 hash of preimage argument
     public String hash(String preimage){
 
         String digest = "";
@@ -74,6 +103,7 @@ class PasswordCracker {
         return digest;
     }
 
+
     public static void main(String[] args){
 
         PasswordCracker c = new PasswordCracker();
@@ -85,7 +115,12 @@ class PasswordCracker {
         System.out.println(c.hash("9wXy!"));
 
 
-        System.out.println(c.parseInput(c.readInput(args[0])).get(0));
+        System.out.println(c.extractHashes(c.parseInput(c.readInput(args[0]))));
+
+        ArrayList<String> wordListHashes = c.createHashes(c.parseInput(c.readInput(args[1])));
+        for (String s : wordListHashes){
+            System.out.println(s);
+        }
 
 
     }

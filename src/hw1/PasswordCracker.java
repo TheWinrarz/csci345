@@ -69,12 +69,28 @@ class PasswordCracker {
     public ArrayList<String> createHashes(ArrayList<String> wordList){
         ArrayList<String> hashList = new ArrayList<>();
 
+        for (Integer i = 1000; i < 1000000; i++) hashList.add(hash((i.toString())));
+
+
         for (String word : wordList){
             hashList.add(hash(word));
+
+            if (word.length() == 4){
+                for (Integer n = 0; n < 10; n++){
+                    hashList.add(word + n);
+                }
+            }
+
+            else if (word.length() == 5 && word.contains("e")){
+                hashList.add(word.replace("e", "3"));
+            }
+
         }
 
         return hashList;
     }
+
+    public void crack(ArrayList<String> craftedHashes, ArrayList<String> extractedHashes){}
 
     //returns MD5 hash of preimage argument
     public String hash(String preimage){
@@ -109,12 +125,6 @@ class PasswordCracker {
         PasswordCracker c = new PasswordCracker();
 
         //The first four passwords
-        System.out.println(c.hash("1234"));
-        System.out.println(c.hash("Hair6"));
-        System.out.println(c.hash("b3ach"));
-        System.out.println(c.hash("9wXy!"));
-
-
         System.out.println(c.extractHashes(c.parseInput(c.readInput(args[0]))));
 
         ArrayList<String> wordListHashes = c.createHashes(c.parseInput(c.readInput(args[1])));

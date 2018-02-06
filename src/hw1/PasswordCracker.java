@@ -66,53 +66,71 @@ class PasswordCracker {
     }
 
 
-    public ArrayList<String> createHashes(ArrayList<String> wordList){
-        ArrayList<String> hashList = new ArrayList<>();
+    public ArrayList<String> createPasswordGuesses(ArrayList<String> wordList){
+        ArrayList<String> guessList = new ArrayList<>();
+        for (Integer i = 1000; i < 1000000; i++) guessList.add((i.toString()));
 
-        for (Integer i = 1000; i < 1000000; i++) hashList.add(hash((i.toString())));
-
-        hashList.add(hash("0000"));
-        hashList.add(hash("000000"));
+        guessList.add("0000");
+        guessList.add("000000");
 
 
         for (String word : wordList){
-            hashList.add(hash(word));
+            guessList.add(word);
 
             if (word.length() == 4){
                 for (Integer n = 0; n < 10; n++){
-                    hashList.add(hash(word.substring(0, 1).toUpperCase() + word.substring(1) + n));
+                    guessList.add(word.substring(0, 1).toUpperCase() + word.substring(1) + n);
                 }
             }
 
             else if (word.length() == 5 && word.contains("e")){
-                hashList.add(hash(word.replace("e", "3")));
+                guessList.add(word.replace("e", "3"));
             }
 
         }
+
+
+        return guessList;
+    }
+
+    public ArrayList<String> createHashes(ArrayList<String> guessList){
+        ArrayList<String> hashList = new ArrayList<>();
+        for (String s: guessList) hashList.add(hash(s));
 
         return hashList;
     }
 
     public void crack(String wordsFile, String usersFile){
-        String words = readInput(wordsFile);
-        String users = readInput(usersFile);
+        File out = new File("output");
+        FileWriter writer;
+        try {
+            writer = new FileWriter(out);
 
-        ArrayList<String> wordList = parseInput(words);
-        ArrayList<String> usersList = parseInput(users);
+            String words = readInput(wordsFile);
+            String users = readInput(usersFile);
 
-        ArrayList<String> wordListHashes = createHashes(wordList);
-        ArrayList<String> passwordHashes = extractHashes(usersList);
+            ArrayList<String> wordList = parseInput(words);
+            ArrayList<String> usersList = parseInput(users);
 
-        for (int i = 0; i < passwordHashes.size(); i++){
-            for (int n = 0; n < wordListHashes.size(); n++) {
-                if (passwordHashes.get(i).equals(wordListHashes.get(n))){
+            ArrayList<String> passwordGuesses = createPasswordGuesses(wordList);
+            ArrayList<String> wordListHashes = createHashes(passwordGuesses);
+            ArrayList<String> passwordHashes = extractHashes(usersList);
 
-                    System.out.println("Match found");
-                    System.out.println(usersList.get(i));
-                    System.out.println(wordListHashes.get(n));
+            for (int i = 0; i < passwordHashes.size(); i++){
+                for (int n = 0; n < wordListHashes.size(); n++) {
+                    if (passwordHashes.get(i).equals(wordListHashes.get(n))){
+
+                        System.out.println("Match found");
+                        System.out.println(passwordHashes.get(i) + ":" + passwordGuesses.get(i));
+                        writer.write(passwordHashes.get(i) + ":" + passwordGuesses.get(i) + "\n");
+                    }
                 }
             }
-        }
+
+            writer.close();
+        } catch (IOException e) {}
+
+
 
     }
 
@@ -147,11 +165,7 @@ class PasswordCracker {
     public static void main(String[] args){
 
 
-        System.out.println(System.getProperty("user.dir"));
         PasswordCracker c = new PasswordCracker();
-
-        //The first four passwords
-        System.out.println(c.extractHashes(c.parseInput(c.readInput(args[0]))));
 
         c.crack(args[1], args[0]);
 

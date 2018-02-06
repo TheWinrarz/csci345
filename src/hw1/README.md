@@ -1,3 +1,10 @@
 "Read-Me" 
 
-The first argument is the absolute path of the password file
+"Password Cracker" 
+
+Homework Assignment #1 \
+Daniel Lee and Phillip Wilson 
+
+
+The first argument will be the absolute path of the file containing the users and hashed passwords. \
+The second argument will be the absolute path of the file containing the word list.
